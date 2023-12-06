@@ -31,6 +31,7 @@ import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class PhieuGiamGiaUI extends JDialog {
@@ -51,6 +52,9 @@ public class PhieuGiamGiaUI extends JDialog {
 	private int index = 1;
 	private int Rowcount = -1;
 	private JTable tblquanli;
+	public List<PhieuGiamGia> lisGiamGia = new PhieuGiamGiaDAO().selectAlList();
+	private JButton btnHoaDon_PG;
+//	String selectByMaPG = "SELECT * FROM PhieuGiamGia Join HoaDon ON "
 
 	/**
 	 * Launch the application.
@@ -79,9 +83,11 @@ public class PhieuGiamGiaUI extends JDialog {
 		setBounds(100, 100, 975, 675);
 		getContentPane().setLayout(null);
 		setLocationRelativeTo(this);
+		setIconImage(XImage.getAppIcon());
+		
 		JPanel panel = new JPanel();
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel.setBounds(10, 143, 574, 459);
+		panel.setBounds(10, 143, 555, 459);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -113,7 +119,7 @@ public class PhieuGiamGiaUI extends JDialog {
 		panel.add(from);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 10, 554, 371);
+		scrollPane.setBounds(10, 10, 531, 371);
 		panel.add(scrollPane);
 		
 		
@@ -131,13 +137,15 @@ public class PhieuGiamGiaUI extends JDialog {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				   showindex(tblquanli.getSelectedRow());
+				   btnHoaDon_PG.setEnabled(true);
+
 			}
 		});
 		scrollPane.setViewportView(tblquanli);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel_1.setBounds(604, 143, 347, 459);
+		panel_1.setBounds(575, 143, 376, 459);
 		getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -223,7 +231,7 @@ public class PhieuGiamGiaUI extends JDialog {
 		});
 		btnThem.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnThem.setIcon(new ImageIcon(PhieuGiamGiaUI.class.getResource("/com/shoplaptop/icon/add2.png")));
-		btnThem.setBounds(204, 27, 133, 38);
+		btnThem.setBounds(204, 27, 149, 38);
 		panel_1.add(btnThem);
 		
 		JButton btnSua = new JButton("Sửa");
@@ -242,7 +250,7 @@ public class PhieuGiamGiaUI extends JDialog {
 		});
 		btnSua.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnSua.setIcon(new ImageIcon(PhieuGiamGiaUI.class.getResource("/com/shoplaptop/icon/update2.png")));
-		btnSua.setBounds(204, 98, 133, 38);
+		btnSua.setBounds(204, 98, 149, 38);
 		panel_1.add(btnSua);
 		
 		JButton btnXoa = new JButton("Xóa");
@@ -260,7 +268,7 @@ public class PhieuGiamGiaUI extends JDialog {
 		});
 		btnXoa.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnXoa.setIcon(new ImageIcon(PhieuGiamGiaUI.class.getResource("/com/shoplaptop/icon/delete2.png")));
-		btnXoa.setBounds(204, 169, 133, 38);
+		btnXoa.setBounds(204, 169, 149, 38);
 		panel_1.add(btnXoa);
 		
 		JButton btnMoi = new JButton("Mới");
@@ -271,7 +279,7 @@ public class PhieuGiamGiaUI extends JDialog {
 		});
 		btnMoi.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnMoi.setIcon(new ImageIcon(PhieuGiamGiaUI.class.getResource("/com/shoplaptop/icon/reset.png")));
-		btnMoi.setBounds(204, 246, 133, 38);
+		btnMoi.setBounds(204, 246, 149, 38);
 		panel_1.add(btnMoi);
 		
 		JButton btnThoat = new JButton("Thoát");
@@ -282,8 +290,28 @@ public class PhieuGiamGiaUI extends JDialog {
 		});
 		btnThoat.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnThoat.setIcon(new ImageIcon(PhieuGiamGiaUI.class.getResource("/com/shoplaptop/icon/exit2.png")));
-		btnThoat.setBounds(204, 323, 133, 38);
+		btnThoat.setBounds(204, 323, 149, 38);
 		panel_1.add(btnThoat);
+		
+		btnHoaDon_PG = new JButton("Thống Kê");
+		btnHoaDon_PG.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String maPG = (String) tblquanli.getValueAt(tblquanli.getSelectedRow(), 1);
+					PhieuGiamGia phieuGiamGia = new PhieuGiamGiaDAO().selectById(maPG);
+					new ThongKePhieuGiamUI().setVisible(true);
+					ThongKePhieuGiamUI.setForm(phieuGiamGia);
+					
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
+			}
+		});
+		btnHoaDon_PG.setEnabled(false);
+		btnHoaDon_PG.setIcon(new ImageIcon(PhieuGiamGiaUI.class.getResource("/com/shoplaptop/icon/Bar chart.png")));
+		btnHoaDon_PG.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		btnHoaDon_PG.setBounds(204, 411, 149, 38);
+		panel_1.add(btnHoaDon_PG);
 		
 		JLabel lblNewLabel = new JLabel("Tìm Kiếm");
 		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 18));
@@ -308,10 +336,10 @@ public class PhieuGiamGiaUI extends JDialog {
 		                findByMaPG(txtTimKiem.getText()).getID(),
 		                findByMaPG(txtTimKiem.getText()).getMaPG(),
 		                findByMaPG(txtTimKiem.getText()).getTenPhieu(),
-		                findByMaPG(txtTimKiem.getText()).getHan(),
+		                XDate.toString(findByMaPG(txtTimKiem.getText()).getHan(), "yyyy-MM-dd HH:mm:ss"),
 		                findByMaPG(txtTimKiem.getText()).getSoLuong(),
-		                findByMaPG(txtTimKiem.getText()).getGiaGiam(),
-		                findByMaPG(txtTimKiem.getText()).getDieuKienGiam()
+		                decimalFormat(findByMaPG(txtTimKiem.getText()).getGiaGiam().multiply(BigDecimal.valueOf(100)))+" %",
+		                decimalFormat(findByMaPG(txtTimKiem.getText()).getDieuKienGiam())
 		            };
 		            tblModel.addRow(row);
 		            MsgBox.alert(getContentPane(), "Tìm thấy kết quả");
@@ -333,6 +361,12 @@ public class PhieuGiamGiaUI extends JDialog {
 		cboLoc.setModel(new DefaultComboBoxModel<String>(new String[] {"Phiếu Còn Hạn", "Phiếu Hết Hạn"}));
 		cboLoc.setBounds(669, 104, 282, 21);
 		getContentPane().add(cboLoc);
+		
+		JLabel lblNewLabel_4_1 = new JLabel("Phiếu Giảm Giá");
+		lblNewLabel_4_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_4_1.setFont(new Font("Times New Roman", Font.BOLD, 30));
+		lblNewLabel_4_1.setBounds(345, 21, 256, 49);
+		getContentPane().add(lblNewLabel_4_1);
 		setPage(pggd.getALLDAO());
 		fillTable((ArrayList<PhieuGiamGia>) pggd.selectAllPhieu(index) );
 		setIconImage(XImage.getAppIcon());

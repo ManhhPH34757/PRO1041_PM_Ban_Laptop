@@ -28,6 +28,8 @@ import com.shoplaptop.dao.HoaDonDAO;
 import com.shoplaptop.dao.KhachHangDAO;
 import com.shoplaptop.entity.KhachHang;
 import com.shoplaptop.utils.MsgBox;
+import com.shoplaptop.utils.XImage;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -38,13 +40,6 @@ import javax.swing.JTextArea;
 
 @SuppressWarnings("serial")
 public class QuanLyKhachHang extends JDialog {
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		new QuanLyKhachHang().setVisible(true);
-	}
 
 	private JTextField txtTimKiem;
 	private DefaultTableModel model;
@@ -61,13 +56,15 @@ public class QuanLyKhachHang extends JDialog {
 	String selectByMaKH = "SELECT HoaDon.ID, dbo.HoaDon.MaHD, HoaDon.MaKH,dbo.HinhThucVanChuyen.ID AS 'ID_HinhThucVanChuyen', dbo.HinhThucVanChuyen.HinhThuc AS 'HinhThucVanChuyen',dbo.HinhThucThanhToan.ID AS 'ID_HinhThucThanhToan',\r\n"
 			+ "	dbo.HinhThucThanhToan.HinhThuc AS 'HinhThucThanhToan',\r\n"
 			+ "	dbo.PhieuGiamGia.ID AS 'ID_PhieuGiamGia', PhieuGiamGia.MaPG, dbo.HoaDon.DotGiamGia,\r\n"
-			+ "	HoaDon.MaNV,\r\n" + "	dbo.HoaDon.NgayTao, dbo.HoaDon.TongTien\r\n"
+			+ "	HoaDon.MaNV,\r\n"
+			+ "	dbo.HoaDon.NgayTao, dbo.HoaDon.TongTien, dbo.HoaDon.TienGiam, dbo.HoaDon.ThanhTien\r\n"
 			+ "FROM dbo.HoaDon JOIN  dbo.KhachHang ON KhachHang.MaKH = HoaDon.MaKH\r\n"
 			+ "			JOIN dbo.HinhThucVanChuyen ON HinhThucVanChuyen.ID = HoaDon.HinhThucVanChuyen\r\n"
 			+ "			JOIN dbo.HinhThucThanhToan ON HinhThucThanhToan.ID = HoaDon.HinhThucThanhToan\r\n"
 			+ "			LEFT JOIN dbo.PhieuGiamGia ON PhieuGiamGia.ID = HoaDon.PhieuGiamGia\r\n"
 			+ "			LEFT JOIN dbo.DotGiamGia ON DotGiamGia.MaDG = dbo.HoaDon.DotGiamGia\r\n"
-			+ "			JOIN dbo.NhanVien ON NhanVien.MaNV = HoaDon.MaNV " + "WHERE dbo.HoaDon.MaKH = ?";
+			+ "			JOIN dbo.NhanVien ON NhanVien.MaNV = HoaDon.MaNV "
+			+ "WHERE dbo.HoaDon.MaKH = ?";
 	private JTextField txtMaKH;
 	private JTextField txtTenKH;
 	private JTextField txtSDT;
@@ -83,6 +80,7 @@ public class QuanLyKhachHang extends JDialog {
 	public QuanLyKhachHang() {
 		getContentPane().setBackground(new Color(255, 255, 255));
 		setTitle("Quản lý khách hàng");
+		setIconImage(XImage.getAppIcon());
 
 		setBounds(100, 100, 975, 675);
 		setLocationRelativeTo(null);
@@ -95,7 +93,7 @@ public class QuanLyKhachHang extends JDialog {
 		getContentPane().add(lblNewLabel);
 
 		JButton btnThemKH = new JButton("Thêm khách hàng");
-		btnThemKH.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/src/com/shoplaptop/icon/Add.png")));
+		btnThemKH.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/com/shoplaptop/icon/Add.png")));
 		btnThemKH.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnThemKH.setForeground(new Color(0, 0, 0));
 		btnThemKH.setBounds(591, 50, 204, 33);
@@ -128,7 +126,7 @@ public class QuanLyKhachHang extends JDialog {
 
 		JButton btnTimKiem = new JButton("Tìm kiếm");
 		btnTimKiem.setBackground(Color.PINK);
-		btnTimKiem.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/src/com/shoplaptop/icon/Search.png")));
+		btnTimKiem.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/com/shoplaptop/icon/Search.png")));
 		btnTimKiem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				findSDT();
@@ -150,17 +148,6 @@ public class QuanLyKhachHang extends JDialog {
 		getContentPane().add(lblNewLabel_1_1);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-//				int index = tblKhachHang.getSelectedRow();
-//				KhachHang khachHang = list.get(index);
-////				new ChiTietKhachHang(QuanLyKhachHang.this).setVisible(true);
-//				setForm(khachHang);
-//				fillTable(list);
-//				fillTable(new HoaDonDAO().selectBySQL(selectByMaKH, khachHang.getMaKH()));
-			}
-		});
 		scrollPane.setBounds(10, 437, 943, 158);
 		getContentPane().add(scrollPane);
 
@@ -174,7 +161,6 @@ public class QuanLyKhachHang extends JDialog {
 
 				int index2 = tblKhachHang.getSelectedRow();
 				KhachHang khachHang = dao.sellectAllKhachHang((index - 1) * 5 + 1).get(index2);
-//					QuanLyKhachHang.this.setVisible(true);
 				setForm(khachHang);
 
 			}
@@ -192,7 +178,9 @@ public class QuanLyKhachHang extends JDialog {
 		lblTruoc.setText("1");
 
 		JButton btnTruoc = new JButton("");
-		btnTruoc.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/src/com/shoplaptop/icon/sau.png")));
+		btnTruoc.setBorderPainted(false);
+		btnTruoc.setBackground(new Color(0, 0, 0));
+		btnTruoc.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/com/shoplaptop/icon/truoc.jpg")));
 		btnTruoc.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnTruoc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -208,9 +196,10 @@ public class QuanLyKhachHang extends JDialog {
 		getContentPane().add(btnTruoc);
 
 		btnSau = new JButton("");
-		btnSau.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/src/com/shoplaptop/icon/truoc.png")));
+		btnSau.setBorderPainted(false);
+		btnSau.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/com/shoplaptop/icon/sau.jpg")));
 		btnSau.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnSau.setBackground(new Color(240, 240, 240));
+		btnSau.setBackground(new Color(0, 0, 0));
 
 		btnSau.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -246,7 +235,7 @@ public class QuanLyKhachHang extends JDialog {
 			}
 		});
 		btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		btnNewButton.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/src/com/shoplaptop/icon/List.png")));
+		btnNewButton.setIcon(new ImageIcon(QuanLyKhachHang.class.getResource("/com/shoplaptop/icon/Save as.png")));
 		btnNewButton.setBounds(805, 50, 148, 33);
 		getContentPane().add(btnNewButton);
 
@@ -390,7 +379,6 @@ public class QuanLyKhachHang extends JDialog {
 		khachHang.setHoTen(txtTenKH.getText());
 		khachHang.setSoDienThoai(txtSDT.getText());
 		khachHang.setNgaySinh(dateChooser.getDate());
-//		khachHang.setNgaySinh(XDate.toDate(txtNgaySinh.getText(), "yyyy-MM-dd"));
 		khachHang.setGioiTinh(rdoNam.isSelected());
 		khachHang.setEmail(txtEmail.getText());
 		khachHang.setDiaChi(txtDiaChi.getText());
@@ -408,27 +396,6 @@ public class QuanLyKhachHang extends JDialog {
 		lblSau.setText("1");
 
 	}
-//	public void findMaKH() {
-//		String maKH =  txtTimKiem.getText();
-//		if (maKH.trim().isEmpty()) {
-//			maKH="";
-//		}
-//		ArrayList<KhachHang> listKH = new ArrayList<>();
-//		listKH.add(new KhachHangDAO().selectById(maKH));
-//		model.setRowCount(0);
-//		for (KhachHang khachHang : listKH) {
-//			Object[] rows = new Object[] {
-//					khachHang.getMaKH(),
-//					khachHang.getHoTen(),
-//					khachHang.getSoDienThoai(),
-//					khachHang.getDiaChi()
-//			};
-//			model.addRow(rows);
-//			
-//		}
-//		fillTable();
-//		
-//	}
 
 	public void updateKH(KhachHang khachHang) {
 
@@ -467,9 +434,6 @@ public class QuanLyKhachHang extends JDialog {
 				row.createCell(0).setCellValue(khachHang.getMaKH());
 				row.createCell(1).setCellValue(khachHang.getHoTen());
 				row.createCell(2).setCellValue(khachHang.getSoDienThoai());
-//                row.createCell(3).setCellValue(khachHang.getNgaySinh());
-//                row.createCell(4).setCellValue(khachHang.isGioiTinh()?"Nam":"Nữ");
-//                row.createCell(5).setCellValue(khachHang.getEmail());
 				row.createCell(3).setCellValue(khachHang.getDiaChi());
 			}
 

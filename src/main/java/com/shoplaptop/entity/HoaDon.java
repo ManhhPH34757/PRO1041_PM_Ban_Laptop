@@ -11,7 +11,7 @@ public class HoaDon {
 	private String hinhThucVanChuyen;
 	private int id_HinhThucThanhToan;
 	private String hinhThucThanhToan;
-	private int id_PhieuGiamGia;
+	private Integer id_PhieuGiamGia;
 	private String phieuGiamGia;
 	private String dotGiamGia;
 	private String maNV;
@@ -26,7 +26,7 @@ public class HoaDon {
 	}
 
 	public HoaDon(int id, String maHD, String maKH, int id_HinhThucVanChuyen, String hinhThucVanChuyen,
-			int id_HinhThucThanhToan, String hinhThucThanhToan, int id_PhieuGiamGia, String phieuGiamGia,
+			int id_HinhThucThanhToan, String hinhThucThanhToan, Integer id_PhieuGiamGia, String phieuGiamGia,
 			String dotGiamGia, String maNV, Date ngayTao, BigDecimal tongTien, BigDecimal tienGiam,
 			BigDecimal thanhTien, String trangThai) {
 		this.id = id;
@@ -103,11 +103,11 @@ public class HoaDon {
 		this.hinhThucThanhToan = hinhThucThanhToan;
 	}
 
-	public int getId_PhieuGiamGia() {
+	public Integer getId_PhieuGiamGia() {
 		return id_PhieuGiamGia;
 	}
 
-	public void setId_PhieuGiamGia(int id_PhieuGiamGia) {
+	public void setId_PhieuGiamGia(Integer id_PhieuGiamGia) {
 		this.id_PhieuGiamGia = id_PhieuGiamGia;
 	}
 
@@ -174,5 +174,17 @@ public class HoaDon {
 	public void setTrangThai(String trangThai) {
 		this.trangThai = trangThai;
 	}
+
+	@Override
+	public String toString() {
+		return "HoaDon [id=" + id + ", maHD=" + maHD + ", maKH=" + maKH + ", id_HinhThucVanChuyen="
+				+ id_HinhThucVanChuyen + ", hinhThucVanChuyen=" + hinhThucVanChuyen + ", id_HinhThucThanhToan="
+				+ id_HinhThucThanhToan + ", hinhThucThanhToan=" + hinhThucThanhToan + ", id_PhieuGiamGia="
+				+ id_PhieuGiamGia + ", phieuGiamGia=" + phieuGiamGia + ", dotGiamGia=" + dotGiamGia + ", maNV=" + maNV
+				+ ", ngayTao=" + ngayTao + ", tongTien=" + tongTien + ", tienGiam=" + tienGiam + ", thanhTien="
+				+ thanhTien + ", trangThai=" + trangThai + "]";
+	}
+	
+	
 	
 }

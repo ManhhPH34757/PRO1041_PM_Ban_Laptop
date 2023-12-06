@@ -1,5 +1,7 @@
 package com.shoplaptop.entity;
 
+import java.util.Objects;
+
 public class HinhThucThanhToan {
 	int id;
 	String hinhThuc;
@@ -28,6 +30,23 @@ public class HinhThucThanhToan {
 
 	public void setHinhthuc(String hinhThuc) {
 		this.hinhThuc = hinhThuc;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(hinhThuc);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		HinhThucThanhToan other = (HinhThucThanhToan) obj;
+		return Objects.equals(hinhThuc, other.hinhThuc);
 	}
 
 	@Override

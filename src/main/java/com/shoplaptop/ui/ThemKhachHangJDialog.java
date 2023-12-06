@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 
 import com.shoplaptop.dao.KhachHangDAO;
 import com.shoplaptop.entity.KhachHang;
+import com.shoplaptop.utils.XImage;
 
 import javax.swing.JTextArea;
 import javax.swing.JButton;
@@ -56,6 +57,7 @@ public class ThemKhachHangJDialog extends JDialog {
 		setBounds(100, 100, 683, 477);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
+		setIconImage(XImage.getAppIcon());
 
 		JLabel lblNewLabel = new JLabel("THÊM KHÁCH HÀNG");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);

@@ -177,6 +177,7 @@ public class ShopLaptop365 extends JFrame {
 				new QuanLyKhachHang().setVisible(true);
 			}
 		});
+		
 		btnKhachHang.setForeground(new Color(0, 0, 0));
 		btnKhachHang.setBackground(new Color(255, 255, 255));
 		btnKhachHang.setIcon(new ImageIcon(ShopLaptop365.class.getResource("/com/shoplaptop/icon/Users.png")));
@@ -184,15 +185,6 @@ public class ShopLaptop365 extends JFrame {
 		btnKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnKhachHang.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		toolBar.add(btnKhachHang);
-		
-		JButton btnDonHang = new JButton("Đơn hàng");
-		btnDonHang.setForeground(new Color(0, 0, 0));
-		btnDonHang.setBackground(new Color(255, 255, 255));
-		btnDonHang.setIcon(new ImageIcon(ShopLaptop365.class.getResource("/com/shoplaptop/icon/Notes.png")));
-		btnDonHang.setVerticalTextPosition(SwingConstants.BOTTOM);
-		btnDonHang.setHorizontalTextPosition(SwingConstants.CENTER);
-		btnDonHang.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		toolBar.add(btnDonHang);
 		
 		JButton btnHoaDon = new JButton("Hóa đơn");
 		btnHoaDon.addActionListener(new ActionListener() {
@@ -237,6 +229,11 @@ public class ShopLaptop365 extends JFrame {
 		toolBar.add(btnPhieuGiamGia);
 		
 		JButton btnDotGiamGia = new JButton("Đợt giảm giá");
+		btnDotGiamGia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new DotgiamgiaView().setVisible(true);
+			}
+		});
 		btnDotGiamGia.setForeground(new Color(0, 0, 0));
 		btnDotGiamGia.setBackground(new Color(255, 255, 255));
 		btnDotGiamGia.setIcon(new ImageIcon(ShopLaptop365.class.getResource("/com/shoplaptop/icon/sale-icon.png")));
@@ -248,7 +245,7 @@ public class ShopLaptop365 extends JFrame {
 		JButton btnPhieuDoi = new JButton("Phiếu đổi");
 		btnPhieuDoi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				new TaoPhieuDoi().setVisible(true);
 			}
 		});
 		btnPhieuDoi.setForeground(new Color(0, 0, 0));
@@ -265,6 +262,34 @@ public class ShopLaptop365 extends JFrame {
 				new QLNhanVien().setVisible(true);
 			}
 		});
+		
+		JButton btnDonHang = new JButton("DS Phiếu đổi");
+		btnDonHang.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new FormDanhSachPhieuDoi().setVisible(true);
+			}
+		});
+		btnDonHang.setForeground(new Color(0, 0, 0));
+		btnDonHang.setBackground(new Color(255, 255, 255));
+		btnDonHang.setIcon(new ImageIcon(ShopLaptop365.class.getResource("/com/shoplaptop/icon/Notes.png")));
+		btnDonHang.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnDonHang.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnDonHang.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		toolBar.add(btnDonHang);
+		
+		JButton btnDsHan = new JButton("DS Hóa đơn");
+		btnDsHan.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new FormDSHoaDon().setVisible(true);
+			}
+		});
+		btnDsHan.setIcon(new ImageIcon(ShopLaptop365.class.getResource("/com/shoplaptop/icon/Price list.png")));
+		btnDsHan.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnDsHan.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnDsHan.setForeground(Color.BLACK);
+		btnDsHan.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		btnDsHan.setBackground(Color.WHITE);
+		toolBar.add(btnDsHan);
 		btnNhanVien.setForeground(new Color(0, 0, 0));
 		btnNhanVien.setBackground(new Color(255, 255, 255));
 		btnNhanVien.setIcon(new ImageIcon(ShopLaptop365.class.getResource("/com/shoplaptop/icon/User.png")));
@@ -284,7 +309,6 @@ public class ShopLaptop365 extends JFrame {
 		if (!Auth.isManager()) {
 			mntmNhanVien.setEnabled(false);
 			btnNhanVien.setEnabled(false);
-			
 		}
 		setResizable(false);
 	}

@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class DotGiamGia {
-	private String ma;
-	private String ten;
+	private String maDotGiam;
+	private String tenDotGiamGia;
 	private Date han;
 	private BigDecimal giaGiam;
 	private BigDecimal dieuKien;
@@ -15,30 +15,30 @@ public class DotGiamGia {
 		
 	}
 
-	public DotGiamGia(String ma, String ten, Date han, BigDecimal giaGiam, BigDecimal dieuKien, String moTa) {
-		super();
-		this.ma = ma;
-		this.ten = ten;
+	public DotGiamGia(String maDotGiam, String tenDotGiamGia, Date han, BigDecimal giaGiam, BigDecimal dieuKien,
+			String moTa) {
+		this.maDotGiam = maDotGiam;
+		this.tenDotGiamGia = tenDotGiamGia;
 		this.han = han;
 		this.giaGiam = giaGiam;
 		this.dieuKien = dieuKien;
 		this.moTa = moTa;
 	}
 
-	public String getMa() {
-		return ma;
+	public String getMaDotGiam() {
+		return maDotGiam;
 	}
 
-	public void setMa(String ma) {
-		this.ma = ma;
+	public void setMaDotGiam(String maDotGiam) {
+		this.maDotGiam = maDotGiam;
 	}
 
-	public String getTen() {
-		return ten;
+	public String getTenDotGiamGia() {
+		return tenDotGiamGia;
 	}
 
-	public void setTen(String ten) {
-		this.ten = ten;
+	public void setTenDotGiamGia(String tenDotGiamGia) {
+		this.tenDotGiamGia = tenDotGiamGia;
 	}
 
 	public Date getHan() {
@@ -72,5 +72,13 @@ public class DotGiamGia {
 	public void setMoTa(String moTa) {
 		this.moTa = moTa;
 	}
+
+	@Override
+	public String toString() {
+		return "DotGiamGia [maDotGiam=" + maDotGiam + ", tenDotGiamGia=" + tenDotGiamGia + ", han=" + han + ", giaGiam="
+				+ giaGiam + ", dieuKien=" + dieuKien + ", moTa=" + moTa + "]";
+	}
+	
+	
 	
 }

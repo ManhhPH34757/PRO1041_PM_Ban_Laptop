@@ -39,14 +39,13 @@ public class NhanVienService implements ShopLaptop365DAO<NhanVien, String>{
 			+ "    (SELECT ROW_NUMBER() OVER (ORDER BY  NhanVien.MaNV DESC) AS rownum,   NhanVien.MaNV,HoTen,SoDienThoai,NgaySinh,GioiTinh,Email,Hinh,DiaChi,VaiTro FROM dbo.NhanVien JOIN dbo.TaiKhoan ON TaiKhoan.MaNV = NhanVien.MaNV)\r\n"
 			+ "    AS temp\r\n"
 			+ "    WHERE rownum BETWEEN ? AND ?";
-	
+	String SelectByTenDangNhap = "SELECT NhanVien.MaNV,HoTen,SoDienThoai,NgaySinh,GioiTinh,Email,Hinh,DiaChi,VaiTro FROM dbo.NhanVien JOIN dbo.TaiKhoan ON TaiKhoan.MaNV = NhanVien.MaNV Where tendangnhap = ?";
 	
 		
 	public String insert(NhanVien entity) {
 		try {
 			XJdbc.update(Insert_SQL, entity.getMaNV(),entity.getHoTen(),entity.getSoDienThoai(),entity.getNgaySinh(),entity.isGioiTinh(),entity.getEmail(),entity.getHinh(),entity.getDiaChi());
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return null;
@@ -58,11 +57,12 @@ public class NhanVienService implements ShopLaptop365DAO<NhanVien, String>{
 			XJdbc.update(Update_SQL, entity.getHoTen(),entity.getSoDienThoai(),entity.getNgaySinh(),entity.isGioiTinh(),entity.getEmail(),entity.getHinh(),entity.getDiaChi(),entity.getMaNV());
 			return "Update thành công";
 		} catch (Exception e) {
-			System.out.println(e);
 			return "Update k thành công";
 		}
 		
 	}
+	
+	
 	
 	public String updateTK(NhanVien nhanVien) {
 		try {
@@ -70,7 +70,6 @@ public class NhanVienService implements ShopLaptop365DAO<NhanVien, String>{
 			return "Update thành công";
 		} catch (Exception e) {
 			return "Update k thành công";
-			// TODO: handle exception
 		}
 		
 	}
@@ -82,9 +81,7 @@ public class NhanVienService implements ShopLaptop365DAO<NhanVien, String>{
 			XJdbc.update(Delete_SQL, id);
 			return "Xóa thành công";
 		} catch (Exception e) {
-			System.out.println(e);
 			return "Xóa k thành công";
-			// TODO: handle exception
 		}
 		
 	}
@@ -97,7 +94,14 @@ public class NhanVienService implements ShopLaptop365DAO<NhanVien, String>{
 		}
 		return list.get(0);
 	}
-
+	
+	public NhanVien selectByTenDangNhap(String id) {
+		List<NhanVien> list = this.selectBySQL(SelectByTenDangNhap, id);
+		if (list.isEmpty()) {
+			return null;
+		}
+		return list.get(0);
+	}
 	
 	public List<NhanVien> selectAll() {
 		return selectBySQL(selectAll);
@@ -119,13 +123,11 @@ public class NhanVienService implements ShopLaptop365DAO<NhanVien, String>{
 				nhanVien.setDiaChi(rs.getString("DiaChi"));
 				nhanVien.setNgaySinh(XDate.toDate(rs.getString("NgaySinh"), "yyyy-MM-dd"));
 				nhanVien.setVaiTro(rs.getBoolean("VaiTro"));
-//				nhanVien.setVaiTro(rs.getBoolean("VaiTro"));
 				list.add(nhanVien);		
 			}
 			rs.getStatement().getConnection().close();
 			return list;
 		} catch (Exception e) {
-			// TODO: handle exception
 			throw new RuntimeException(e);
 		}
 	

@@ -52,6 +52,55 @@ public class BienTheDAO implements ShopLaptop365DAO<BienThe, String> {
 	
 	String deleteBienThe = "DELETE FROM BienThe WHERE MaBienThe = ?";
 	
+	String selectBySerial = "SELECT dbo.BienThe.ID, dbo.BienThe.MaBienThe,\r\n"
+			+ "			dbo.Laptop.MaLaptop,dbo.CPU.ID AS [ID_CPU],\r\n"
+			+ "			(dbo.CPU.hangCPU + ' ' + dbo.CPU.loaiCPU) AS [CPU],\r\n"
+			+ "			dbo.RAM.ID AS [ID_RAM],\r\n"
+			+ "			(dbo.RAM.loaiRAM + ' - ' + CAST(dbo.RAM.dungLuong AS VARCHAR(10)) + ' GB ' + CAST(dbo.RAM.tocDoRAM AS VARCHAR(10)) + ' MHz') AS [RAM],\r\n"
+			+ "			dbo.ManHinh.ID AS [ID_ManHinh],\r\n"
+			+ "			(dbo.ManHinh.congNgheManHinh + ' - ' + CAST(dbo.ManHinh.kichThuocManHinh AS VARCHAR(10)) + ' - ' + dbo.ManHinh.doPhanGiai) AS [Màn hình],\r\n"
+			+ "			dbo.GPU.ID AS [ID_GPU],\r\n"
+			+ "			(dbo.GPU.loaiCard + ' - ' + dbo.GPU.hang) AS [GPU],\r\n"
+			+ "			dbo.OCung.ID AS [ID_OCung],\r\n"
+			+ "			(N'Ổ ' + dbo.OCung.kieuOCung + ' - ' + CAST(dbo.OCung.dungLuong AS VARCHAR(10)) + ' GB') AS [Ổ cứng],\r\n"
+			+ "			MauSac,\r\n"
+			+ "			dbo.HeDieuHanh.ID AS [ID_HeDieuHanh],\r\n"
+			+ "			(dbo.HeDieuHanh.os + ' ' + dbo.HeDieuHanh.versions + ' ' + CAST(dbo.HeDieuHanh.kieu AS VARCHAR(10)) + '(bit)') AS [Hệ điều hành],\r\n"
+			+ "			Gia,\r\n"
+			+ "			Hinh,\r\n"
+			+ "			COUNT(SerialNumber) AS [Số lượng]\r\n"
+			+ "			FROM dbo.BienThe JOIN dbo.Laptop ON Laptop.ID = BienThe.ID_Laptop \r\n"
+			+ "			LEFT JOIN dbo.Serial ON Serial.ID_BienThe = BienThe.ID \r\n"
+			+ "			JOIN dbo.CPU ON CPU.ID = BienThe.CPU \r\n"
+			+ "			JOIN dbo.RAM ON RAM.ID = BienThe.RAM \r\n"
+			+ "			JOIN dbo.ManHinh ON ManHinh.ID = BienThe.ManHinh \r\n"
+			+ "			JOIN dbo.GPU ON GPU.ID = BienThe.GPU \r\n"
+			+ "			JOIN dbo.OCung ON OCung.ID = BienThe.OCung \r\n"
+			+ "			JOIN dbo.HeDieuHanh ON HeDieuHanh.ID = BienThe.HeDieuHanh\r\n"
+			+ "			WHERE dbo.Serial.SerialNumber = ?\r\n"
+			+ "			GROUP BY (dbo.CPU.hangCPU + ' ' + dbo.CPU.loaiCPU),\r\n"
+			+ "                     (dbo.RAM.loaiRAM + ' - ' + CAST(dbo.RAM.dungLuong AS VARCHAR(10)) + ' GB '\r\n"
+			+ "                     + CAST(dbo.RAM.tocDoRAM AS VARCHAR(10)) + ' MHz'\r\n"
+			+ "                     ),\r\n"
+			+ "                     (dbo.ManHinh.congNgheManHinh + ' - ' + CAST(dbo.ManHinh.kichThuocManHinh AS VARCHAR(10)) + ' - '\r\n"
+			+ "                     + dbo.ManHinh.doPhanGiai\r\n"
+			+ "                     ),\r\n"
+			+ "                     (dbo.GPU.loaiCard + ' - ' + dbo.GPU.hang),\r\n"
+			+ "                     (N'Ổ ' + dbo.OCung.kieuOCung + ' - ' + CAST(dbo.OCung.dungLuong AS VARCHAR(10)) + ' GB'),\r\n"
+			+ "                     (dbo.HeDieuHanh.os + ' ' + dbo.HeDieuHanh.versions + ' ' + CAST(dbo.HeDieuHanh.kieu AS VARCHAR(10)) + '(bit)'),\r\n"
+			+ "                     BienThe.ID,\r\n"
+			+ "                     MaBienThe,\r\n"
+			+ "                     MaLaptop,\r\n"
+			+ "                     CPU.ID,\r\n"
+			+ "                     RAM.ID,\r\n"
+			+ "                     ManHinh.ID,\r\n"
+			+ "                     GPU.ID,\r\n"
+			+ "                     OCung.ID,\r\n"
+			+ "                     MauSac,\r\n"
+			+ "                     HeDieuHanh.ID,\r\n"
+			+ "                     Gia,\r\n"
+			+ "                     Hinh";
+	
 	public String insert(BienThe bienThe) {
 		try {
 			XJdbc.update(storedProcedureInsert, bienThe.getId_Laptop(), bienThe.getMaBienThe(), bienThe.getId_CPU(),
@@ -86,6 +135,14 @@ public class BienTheDAO implements ShopLaptop365DAO<BienThe, String> {
 
 	public BienThe selectById(String id) {
 		List<BienThe> list = this.selectBySQL(selectBienTheByMaLaptop, id);
+		if (list.isEmpty()) {
+			return null;
+		}
+		return list.get(0);
+	}
+	
+	public BienThe selectBySerial(String serial) {
+		List<BienThe> list = this.selectBySQL(selectBySerial, serial);
 		if (list.isEmpty()) {
 			return null;
 		}

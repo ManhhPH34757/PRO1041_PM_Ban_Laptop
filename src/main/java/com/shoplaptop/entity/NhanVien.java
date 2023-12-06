@@ -18,7 +18,6 @@ public class NhanVien {
 		
 	}
 
-
 	public NhanVien(String maNV, String hoTen, String soDienThoai, Date ngaySinh, boolean gioiTinh, String email,
 			String hinh, String diaChi, boolean vaiTro) {
 		this.maNV = maNV;

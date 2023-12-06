@@ -3,7 +3,6 @@ package com.shoplaptop.ui;
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 import javax.swing.JLayeredPane;
-import java.awt.Toolkit;
 import java.util.List;
 
 import javax.swing.JScrollPane;
@@ -14,6 +13,7 @@ import com.shoplaptop.dao.LS_HoaDonDao;
 import com.shoplaptop.dao.LS_PhieuDoiDao;
 import com.shoplaptop.entity.BaoCao_LS_HoaDon;
 import com.shoplaptop.entity.BaoCao_LS_PhieuDoi;
+import com.shoplaptop.utils.XImage;
 
 @SuppressWarnings("serial")
 public class BaoCao extends JDialog {
@@ -27,11 +27,11 @@ public class BaoCao extends JDialog {
 	private JTable tblPhieuDoi;
 
 	public BaoCao() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(BaoCao.class.getResource("/com/shoplaptop/icon/365_1.png")));
 		setTitle("ShopLapTop365\r\n");
 		setBounds(100, 100, 748, 409);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
+		setIconImage(XImage.getAppIcon());
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(10, 10, 714, 349);

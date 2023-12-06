@@ -23,7 +23,6 @@ import com.shoplaptop.utils.XImage;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -55,11 +54,11 @@ public class LS_NhanVien extends JDialog {
 	public LS_NhanVien(QLNhanVien qlNhanVien) {
 		getContentPane().setFont(new Font("Times New Roman", Font.PLAIN, 17));
 		setTitle("ShopLapTop365");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(LS_NhanVien.class.getResource("/com/shoplaptop/icon/365_1.png")));
 		this.qlNhanVien = qlNhanVien;
 		setBounds(100, 100, 841, 614);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
+		setIconImage(XImage.getAppIcon());
 		
 		JLabel lblNewLabel = new JLabel("Chi tiết nhân viên ");
 		lblNewLabel.setIcon(new ImageIcon(LS_NhanVien.class.getResource("/com/shoplaptop/icon/nhanvien.png")));
@@ -82,13 +81,15 @@ public class LS_NhanVien extends JDialog {
 		getContentPane().add(lblNewLabel_1_1);
 		
 		txtmanhanvien = new JTextField();
+		txtmanhanvien.setFont(new Font("Times New Roman", Font.PLAIN, 17));
 		txtmanhanvien.setColumns(10);
-		txtmanhanvien.setBounds(432, 123, 324, 19);
+		txtmanhanvien.setBounds(432, 123, 324, 28);
 		getContentPane().add(txtmanhanvien);
 		
 		txttennhanvien = new JTextField();
+		txttennhanvien.setFont(new Font("Times New Roman", Font.PLAIN, 17));
 		txttennhanvien.setColumns(10);
-		txttennhanvien.setBounds(10, 299, 324, 19);
+		txttennhanvien.setBounds(10, 299, 324, 28);
 		getContentPane().add(txttennhanvien);
 		
 		JLabel lblNewLabel_1_2 = new JLabel("Địa Chỉ ");
@@ -97,8 +98,9 @@ public class LS_NhanVien extends JDialog {
 		getContentPane().add(lblNewLabel_1_2);
 		
 		txtdiachi = new JTextField();
+		txtdiachi.setFont(new Font("Times New Roman", Font.PLAIN, 17));
 		txtdiachi.setColumns(10);
-		txtdiachi.setBounds(10, 364, 324, 19);
+		txtdiachi.setBounds(10, 364, 324, 28);
 		getContentPane().add(txtdiachi);
 		
 		JLabel lblNewLabel_1_3 = new JLabel("Email ");
@@ -107,8 +109,9 @@ public class LS_NhanVien extends JDialog {
 		getContentPane().add(lblNewLabel_1_3);
 		
 		txtemail = new JTextField();
+		txtemail.setFont(new Font("Times New Roman", Font.PLAIN, 17));
 		txtemail.setColumns(10);
-		txtemail.setBounds(432, 199, 324, 19);
+		txtemail.setBounds(432, 199, 324, 28);
 		getContentPane().add(txtemail);
 		
 		JLabel lblNewLabel_1_4 = new JLabel("Ngày Sinh ");
@@ -117,18 +120,19 @@ public class LS_NhanVien extends JDialog {
 		getContentPane().add(lblNewLabel_1_4);
 		
 		txtngaysinh = new JTextField();
+		txtngaysinh.setFont(new Font("Times New Roman", Font.PLAIN, 17));
 		txtngaysinh.setColumns(10);
-		txtngaysinh.setBounds(432, 442, 324, 19);
+		txtngaysinh.setBounds(432, 442, 324, 28);
 		getContentPane().add(txtngaysinh);
 		
 		JLabel lblNewLabel_1_4_1 = new JLabel("Giới tính ");
 		lblNewLabel_1_4_1.setFont(new Font("Times New Roman", Font.PLAIN, 17));
-		lblNewLabel_1_4_1.setBounds(432, 238, 124, 26);
+		lblNewLabel_1_4_1.setBounds(432, 248, 124, 26);
 		getContentPane().add(lblNewLabel_1_4_1);
 		
 		rdonam = new JRadioButton("Nam ");
 		rdonam.setFont(new Font("Times New Roman", Font.PLAIN, 17));
-		rdonam.setBounds(432, 296, 97, 20);
+		rdonam.setBounds(432, 299, 97, 20);
 		getContentPane().add(rdonam);
 		
 		rdonu = new JRadioButton("Nữ ");
@@ -142,8 +146,9 @@ public class LS_NhanVien extends JDialog {
 		getContentPane().add(lblNewLabel_1_4_2);
 		
 		txtsodeinthoai = new JTextField();
+		txtsodeinthoai.setFont(new Font("Times New Roman", Font.PLAIN, 17));
 		txtsodeinthoai.setColumns(10);
-		txtsodeinthoai.setBounds(432, 364, 324, 19);
+		txtsodeinthoai.setBounds(432, 364, 324, 28);
 		getContentPane().add(txtsodeinthoai);
 		
 		JLabel lblNewLabel_1_4_1_1 = new JLabel("Vai Trò ");

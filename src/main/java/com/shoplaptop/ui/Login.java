@@ -44,6 +44,7 @@ public class Login extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel);
 		contentPanel.setLayout(null);
+		setIconImage(XImage.getAppIcon());
 		
 		JLabel lblMaNV = new JLabel("Tên đăng nhập");
 		lblMaNV.setFont(new Font("Tahoma", Font.PLAIN, 20));

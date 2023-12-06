@@ -21,6 +21,10 @@ public class SerialNumberDAO implements ShopLaptop365DAO<SerialNumber, String>{
 			+ "FROM dbo.Serial JOIN dbo.BienThe ON BienThe.ID = Serial.ID_BienThe JOIN dbo.Laptop ON Laptop.ID = BienThe.ID_Laptop \r\n"
 			+ "WHERE TrangThai = 1";
 	
+	String update = "UPDATE Serial SET TrangThai = 0 WHERE SerialNumber = ?";
+	
+	String updateTT = "UPDATE Serial SET TrangThai = 1 WHERE SerialNumber = ?";
+	
 	@Override
 	public String insert(SerialNumber entity) {
 		try {
@@ -28,14 +32,25 @@ public class SerialNumberDAO implements ShopLaptop365DAO<SerialNumber, String>{
 			return "Add thành công";
 		} catch (SQLException e) {
 			return "Serial đã tồn tại";
-
 		}
 	}
 
-	@Override
-	public String update(SerialNumber entity) {
-		// TODO Auto-generated method stub
-		return null;
+	public String updateTT(String serial) {
+		try {
+			XJdbc.update(update, serial);
+			return "";
+		} catch (SQLException e) {
+			return "";
+
+		}
+	}
+	
+	public void updateSerial(String serial) {
+		try {
+			XJdbc.update(updateTT, serial);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	@Override
@@ -79,6 +94,14 @@ public class SerialNumberDAO implements ShopLaptop365DAO<SerialNumber, String>{
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+
+
+	@Override
+	public String update(SerialNumber entity) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

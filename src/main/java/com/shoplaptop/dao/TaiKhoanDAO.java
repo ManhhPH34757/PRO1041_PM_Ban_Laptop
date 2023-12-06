@@ -1,6 +1,9 @@
 package com.shoplaptop.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,29 +12,71 @@ import com.shoplaptop.utils.XJdbc;
 
 public class TaiKhoanDAO implements ShopLaptop365DAO<TaiKhoan, String> {
 	
+	
+	Connection connection = new XJdbc().Connect();
+	Statement st = null;
+	PreparedStatement ps = null;
+	ResultSet rs = null;
+	
+	String Insert_sql = "INSERT INTO dbo.TaiKhoan( MaNV,TenDangNhap, MatKhau,VaiTro)VALUES( ?,?,?,? )";
+
+	String Update_sql = "UPDATE dbo.TaiKhoan SET VaiTro =? WHERE MaNV =?";
+	
+	String Update_sql_matkhau = "UPDATE dbo.TaiKhoan SET matkhau =? WHERE MaNV =?";
+	
+	String DeleteString_sql = "DELETE FROM dbo.TaiKhoan WHERE MaNV =?";
+	
 	String SelectById_SQL = "SELECT * FROM TaiKhoan WHERE TenDangNhap = ?";
 	
 	String SelectById_SQL_1 = "SELECT TaiKhoan.MaNv,TenDangNhap,MatKhau,VaiTro FROM dbo.NhanVien JOIN dbo.TaiKhoan ON TaiKhoan.MaNV = NhanVien.MaNV Where NhanVien.MaNV = ?";
-
-
-	@Override
+	
+	String sellectAll = "SELECT * FROM dbo.TaiKhoan";
+	
+	String selectByTenDangNhap = "SELECT Tendangnhap,matkhau FROM TaiKhoan where manv = ?";
+	
+	String SelectByVaiTro = "SELECT * FROM TaiKhoan where manv = ?";	
+	
+	
 	public String insert(TaiKhoan taiKhoan) {
-		// TODO Auto-generated method stub
+		try {
+			XJdbc.update(Insert_sql, taiKhoan.getMaNV(),taiKhoan.getTenDangNhap(),taiKhoan.getMatKhau(),taiKhoan.isVaiTro());
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 		return null;
 	}
 
-	@Override
+	
 	public String update(TaiKhoan taiKhoan) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String delete(String MaNV) {
-		// TODO Auto-generated method stub
+		try {
+			XJdbc.update(Update_sql, taiKhoan.isVaiTro(),taiKhoan.getMaNV());
+			
+		} catch (Exception e) {
+			
+		}
 		return null;
 	}
 	
+	public String updateMatKhau(TaiKhoan taiKhoan) {
+		try {
+			XJdbc.update(Update_sql_matkhau, taiKhoan.getMatKhau(),taiKhoan.getMaNV());
+			return "Update thành công";
+		} catch (Exception e) {
+			return "Update không thành công";
+		}
+		
+	}
+
+	
+	public String delete(String MaNV) {
+		try {
+			XJdbc.update(DeleteString_sql, MaNV);
+		} catch (Exception e) {
+			
+		}
+		return null;
+	}
+
 	public TaiKhoan selectbymanhanvien(String manv) {
 		List<TaiKhoan> list = this.selectBySQL(SelectById_SQL_1, manv);
 		if (list.isEmpty()) {
@@ -39,8 +84,23 @@ public class TaiKhoanDAO implements ShopLaptop365DAO<TaiKhoan, String> {
 		}
 		return list.get(0);
 	}
-
-	@Override
+	
+	public TaiKhoan selectbyvaitro(String manv) {
+		List<TaiKhoan> list = this.selectBySQL(SelectByVaiTro, manv);
+		if (list.isEmpty()) {
+			return null;
+		}
+		return list.get(0);
+	}
+	
+	public TaiKhoan selectByTenDangNhap(String id) {
+		List<TaiKhoan> list = this.selectBySQL(selectByTenDangNhap, id);
+		if (list.isEmpty()) {
+			return null;
+		}
+		return list.get(0);
+	}
+	
 	public TaiKhoan selectById(String tenDangNhap) {
 		List<TaiKhoan> list = this.selectBySQL(SelectById_SQL, tenDangNhap);
 		if (list.isEmpty()) {
@@ -49,13 +109,12 @@ public class TaiKhoanDAO implements ShopLaptop365DAO<TaiKhoan, String> {
 		return list.get(0);
 	}
 
-	@Override
+	
 	public List<TaiKhoan> selectAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return selectBySQL(sellectAll);
 	}
 
-	@Override
+	
 	public List<TaiKhoan> selectBySQL(String sql, Object... args) {
 		List<TaiKhoan> list = new ArrayList<TaiKhoan>();
 		try {
@@ -74,5 +133,4 @@ public class TaiKhoanDAO implements ShopLaptop365DAO<TaiKhoan, String> {
 			throw new RuntimeException(e);
 		}
 	}
-
 }

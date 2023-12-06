@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import com.shoplaptop.dao.KhachHangDAO;
 import com.shoplaptop.entity.HoaDon;
 import com.shoplaptop.entity.KhachHang;
+import com.shoplaptop.utils.XImage;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.JTextArea;
@@ -19,6 +20,8 @@ import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
@@ -54,6 +57,7 @@ public class ChiTietKhachHang extends JDialog {
 		setBounds(100, 100, 975, 675);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
+		setIconImage(XImage.getAppIcon());
 
 		JLabel lblNewLabel = new JLabel("CHI TIẾT THÔNG TIN KHÁCH HÀNG");
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 28));
@@ -149,7 +153,7 @@ public class ChiTietKhachHang extends JDialog {
 		btnSuaKH.setBackground(Color.PINK);
 		btnSuaKH.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnSuaKH.setForeground(new Color(30, 144, 255));
-		btnSuaKH.setIcon(new ImageIcon(ChiTietKhachHang.class.getResource("/src/com/shoplaptop/icon/Edit.png")));
+		btnSuaKH.setIcon(new ImageIcon(ChiTietKhachHang.class.getResource("/com/shoplaptop/icon/Edit.png")));
 		btnSuaKH.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ChiTietKhachHang.this.quanLyKhachHang.updateKH(getForm());
@@ -164,15 +168,15 @@ public class ChiTietKhachHang extends JDialog {
 		btnXoaKH.setBackground(Color.PINK);
 		btnXoaKH.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnXoaKH.setForeground(new Color(0, 128, 255));
-		btnXoaKH.setIcon(new ImageIcon(ChiTietKhachHang.class.getResource("/src/com/shoplaptop/icon/Delete.png")));
+		btnXoaKH.setIcon(new ImageIcon(ChiTietKhachHang.class.getResource("/com/shoplaptop/icon/Delete.png")));
 		btnXoaKH.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (JOptionPane.showConfirmDialog(getContentPane(), "Xác nhận xóa") == JOptionPane.YES_NO_OPTION) {
 					deleteKH();
-					ChiTietKhachHang.this.quanLyKhachHang.fillTable(new KhachHangDAO().selectAll());
+					ChiTietKhachHang.this.quanLyKhachHang.fillTable(new KhachHangDAO().sellectAllKhachHang(1));
 				}
 				dispose();
-				ChiTietKhachHang.this.quanLyKhachHang.fillTable(new KhachHangDAO().selectAll());
+				ChiTietKhachHang.this.quanLyKhachHang.fillTable(new KhachHangDAO().sellectAllKhachHang(1));
 			}
 		});
 		btnXoaKH.setBounds(830, 588, 102, 41);
@@ -187,10 +191,12 @@ public class ChiTietKhachHang extends JDialog {
 		getContentPane().add(scrollPane);
 
 		modelHoaDon = new DefaultTableModel();
-		String[] colsHoaDon = { "Mã hóa đơn", "Ngày tạo", "Mã NV", "Tổng tiền" };
+		String[] colsHoaDon = { "Mã hóa đơn", "Ngày tạo", "Mã NV", "Tổng tiền", "Tiền Giảm", "Thành tiền" };
 		modelHoaDon.setColumnIdentifiers(colsHoaDon);
 
 		tblHoaDon = new JTable(modelHoaDon);
+		tblHoaDon.setRowMargin(3);
+		tblHoaDon.setRowHeight(25);
 		tblHoaDon.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		scrollPane.setViewportView(tblHoaDon);
 
@@ -205,7 +211,7 @@ public class ChiTietKhachHang extends JDialog {
 		modelHoaDon.setRowCount(0);
 		for (HoaDon hoaDon : list) {
 			Object[] rows = new Object[] { hoaDon.getMaHD(), hoaDon.getNgayTao(), hoaDon.getMaNV(),
-					hoaDon.getTongTien() };
+					decimalFormat(hoaDon.getTongTien()), decimalFormat(hoaDon.getTienGiam()), decimalFormat(hoaDon.getThanhTien()) };
 			modelHoaDon.addRow(rows);
 		}
 
@@ -238,6 +244,12 @@ public class ChiTietKhachHang extends JDialog {
 	public void deleteKH() {
 		KhachHang khachHang = getForm();
 		JOptionPane.showMessageDialog(getContentPane(), new KhachHangDAO().delete(khachHang.getMaKH()));
+	}
+	
+	public static String decimalFormat(BigDecimal number) {
+		DecimalFormat decimalFormat = new DecimalFormat("0.####################");
+		String formattedNumber = decimalFormat.format(number);
+		return formattedNumber;
 	}
 
 }

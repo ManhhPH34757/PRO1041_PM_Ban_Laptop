@@ -21,6 +21,10 @@ public class LaptopDAO implements ShopLaptop365DAO<Laptop, String>{
 			+ "    WHERE rownum BETWEEN ? AND ?";
 	String selectByLaptop = "";
 	
+	String selectBySerial_SQL = "SELECT Laptop.ID, MaLaptop, TenLaptop, PhanLoai.ID AS PhanLoai, PhanLoai.Tenloai, Hang.ID AS Hang, Hang.TenHang, DongLaptop.ID AS DongLaptop, DongLaptop.TenDong, NamSanXuat  \r\n"
+			+ "		FROM Laptop JOIN PhanLoai ON Laptop.PhanLoai = PhanLoai.ID JOIN DongLaptop ON Laptop.DongLaptop = DongLaptop.ID JOIN Hang ON Hang.ID = DongLaptop.Hang JOIN dbo.BienThe ON BienThe.ID_Laptop = Laptop.ID JOIN dbo.Serial ON Serial.ID_BienThe = BienThe.ID\r\n"
+			+ "		WHERE dbo.Serial.SerialNumber = ?";
+	
 	public String insert(Laptop laptop) {
 		try {
 			XJdbc.update(insertLaptop,  laptop.getMaLaptop(),  laptop.getTenLaptop(),  laptop.getPhanLoai(),  laptop.getDongLaptop(),  laptop.getNamSanXuat());
@@ -49,6 +53,14 @@ public class LaptopDAO implements ShopLaptop365DAO<Laptop, String>{
 			return "Xóa thất bại";
 			
 		}
+	}
+	
+	public Laptop selectBySerial(String serial) {
+		List<Laptop> list = this.selectBySQL(selectBySerial_SQL, serial);
+		if (list.isEmpty()) {
+			return null;
+		}
+		return list.get(0);
 	}
 
 	public Laptop selectById(String id) {

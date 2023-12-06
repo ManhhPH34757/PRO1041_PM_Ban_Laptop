@@ -18,8 +18,6 @@ public class KhachHangDAO implements ShopLaptop365DAO<KhachHang, String> {
 	PreparedStatement pStatement = null;
 	ResultSet rSet = null;
 	
-	
-	
 		String insertKH_SQL="INSERT INTO dbo.KhachHang(MaKH, HoTen, SoDienThoai, NgaySinh, GioiTinh, Email, DiaChi) VALUES (?,?,?,?,?,?,?)";
 		String updateKH_SQL="UPDATE dbo.KhachHang SET HoTen=?, SoDienThoai=?, NgaySinh=?, GioiTinh=?, Email=?, DiaChi=? WHERE MaKH=?";
 		String deleteKH_SQL="DELETE FROM KhachHang WHERE MaKH=?";
@@ -31,7 +29,9 @@ public class KhachHangDAO implements ShopLaptop365DAO<KhachHang, String> {
 		
 		String insertKH_No_Infomation = "INSERT INTO dbo.KhachHang (MaKH, HoTen, SoDienThoai, DiaChi) VALUES (?, ?, ?, ?)";
 		
+		String selectHoaDonBySoDienThoai = "SELECT * FROM KhachHang WHERE SoDienThoai = ? ";
 
+		
 	@Override
 	public String insert(KhachHang khachHang) {
 		 
@@ -52,6 +52,14 @@ public class KhachHangDAO implements ShopLaptop365DAO<KhachHang, String> {
 			
 			throw new RuntimeException();
 		}
+	}
+	
+	public KhachHang selectHoaDonBySoDienThoai(String SDT) {
+		List<KhachHang> list = this.selectBySQL(selectHoaDonBySoDienThoai, SDT);
+		if (list.isEmpty()) {
+			return null;
+		}
+		return list.get(0);
 	}
 	
 	public String insertKH(KhachHang khachHang) {
@@ -160,8 +168,6 @@ public class KhachHangDAO implements ShopLaptop365DAO<KhachHang, String> {
 		
 		
 	}
-
-
 
 
 }

@@ -1,7 +1,5 @@
 package com.shoplaptop.ui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -10,7 +8,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -37,12 +34,17 @@ import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import com.shoplaptop.dao.CTHoaDonDAO;
 import com.shoplaptop.dao.DotGiamGiaDAO;
 import com.shoplaptop.dao.HinhThucThanhToanDAO;
 import com.shoplaptop.dao.HinhThucVanChuyenDAO;
+import com.shoplaptop.dao.HoaDonDAO;
 import com.shoplaptop.dao.KhachHangDAO;
+import com.shoplaptop.dao.LS_HoaDonDao;
+import com.shoplaptop.dao.NhanVienService;
 import com.shoplaptop.dao.PhieuGiamGiaDAO;
 import com.shoplaptop.dao.SerialNumberDAO;
+import com.shoplaptop.entity.BaoCao_LS_HoaDon;
 import com.shoplaptop.entity.CTHoaDon;
 import com.shoplaptop.entity.DotGiamGia;
 import com.shoplaptop.entity.HinhThucThanhToan;
@@ -51,7 +53,9 @@ import com.shoplaptop.entity.HoaDon;
 import com.shoplaptop.entity.KhachHang;
 import com.shoplaptop.entity.PhieuGiamGia;
 import com.shoplaptop.entity.SerialNumber;
+import com.shoplaptop.utils.Auth;
 import com.shoplaptop.utils.MsgBox;
+import com.shoplaptop.utils.XDate;
 import com.shoplaptop.utils.XImage;
 
 import javax.swing.border.EtchedBorder;
@@ -75,28 +79,28 @@ import java.io.IOException;
 
 @SuppressWarnings("serial")
 public class HoaDonManager extends JDialog {
-	private JTextField txtTongTien;
+	public static JTextField txtTongTien;
 	private JTextField txtSerialNumber;
 	public static JTextField txtSoDienThoai;
-	private JTable tblHoaDon_CXN;
-	private JTable tblCTHoaDon;
+	public static JTable tblHoaDon_CXN;
+	public static JTable tblCTHoaDon;
 	private JComboBox<HinhThucVanChuyen> cboHinhThucVanChuyen;
 	private JComboBox<HinhThucThanhToan> cboHinhThucThanhToan;
 	private JLabel lblGiaVC;
 	private DefaultTableModel modelCTHoaDon;
-	private List<HoaDon> HOA_DON_REPO = new ArrayList<HoaDon>();
-	private List<HoaDon> Hoa_Don_Wait = new ArrayList<HoaDon>();
+	public static List<HoaDon> HOA_DON_REPO = new ArrayList<HoaDon>();
+	public static List<HoaDon> Hoa_Don_Wait = new ArrayList<HoaDon>();
 	private List<HoaDon> Hoa_Don_Success = new ArrayList<HoaDon>();
-	private List<CTHoaDon> HDCT_REPO = new ArrayList<CTHoaDon>();
+	public static List<CTHoaDon> HDCT_REPO = new ArrayList<CTHoaDon>();
 	private List<SerialNumber> SAN_PHAM_REPO = new SerialNumberDAO().selectAll();
 	private JTextField txtMaPhieuGG;
-	private JTextField txtDotGiamGia;
-	private JTextField txtTienGiam;
+	public static JTextField txtDotGiamGia;
+	public static JTextField txtTienGiam;
 	private JTextField txtThanhTien;
 	private JButton btnAddSP;
-	private BigDecimal tongTiens = BigDecimal.valueOf(Double.valueOf(0));
-	private BigDecimal tienGiamPhieus = BigDecimal.valueOf(Double.valueOf(0));
-	private BigDecimal tienGiamDots = BigDecimal.valueOf(Double.valueOf(0));
+	public static BigDecimal tongTiens = BigDecimal.valueOf(Double.valueOf(0));
+	public static BigDecimal tienGiamPhieus = BigDecimal.valueOf(Double.valueOf(0));
+	public static BigDecimal tienGiamDots = BigDecimal.valueOf(Double.valueOf(0));
 	private BigDecimal thanhTiens = BigDecimal.valueOf(Double.valueOf(0));
 	private static JLabel lblMaNV;
 	private JLabel lblMaKH;
@@ -109,24 +113,6 @@ public class HoaDonManager extends JDialog {
 	private JTable tblHoaDon_DXN;
 	private JButton btnNhapKH;
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					HoaDonManager dialog = new HoaDonManager();
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	/**
 	 * Create the dialog.
 	 */
@@ -143,6 +129,7 @@ public class HoaDonManager extends JDialog {
 				HoaDon hoaDon = new HoaDon();
 				hoaDon.setMaHD(generateAutoCode());
 				hoaDon.setTrangThai("Chờ thanh toán");
+				hoaDon.setMaNV(lblMaNV.getText());
 				if (lblMaKH.getText() != "---") {
 					hoaDon.setMaKH(lblMaKH.getText());
 					
@@ -358,6 +345,8 @@ public class HoaDonManager extends JDialog {
 		lblMaNV.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		lblMaNV.setBounds(714, 28, 226, 30);
 		getContentPane().add(lblMaNV);
+		
+		lblMaNV.setText(Auth.user.getMaNV());
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 70, 564, 163);
@@ -384,8 +373,6 @@ public class HoaDonManager extends JDialog {
 				tongTiens = tongTien;
 				txtTongTien.setText(decimalFormat(tongTiens));
 				
-				
-
 				for (HoaDon hoaDon : HOA_DON_REPO.stream()
 						.filter(hd -> hd.getTrangThai().equals("Chờ thanh toán") && hd.getMaHD().equals(maHoaDon))
 						.collect(Collectors.toList())) {
@@ -467,7 +454,7 @@ public class HoaDonManager extends JDialog {
 					
 					DotGiamGia dotGiamGia = new DotGiamGiaDAO().selectDGG(tongTiens);
 					if (dotGiamGia != null) {
-						txtDotGiamGia.setText(dotGiamGia.getTen() + " - " + dotGiamGia.getGiaGiam());
+						txtDotGiamGia.setText(dotGiamGia.getMaDotGiam());
 						tienGiamDots = dotGiamGia.getGiaGiam();
 					}
 					
@@ -485,6 +472,7 @@ public class HoaDonManager extends JDialog {
 				}
 			}
 		});
+		
 		btnAddSP.setFont(new Font("Times New Roman", Font.BOLD, 18));
 		btnAddSP.setBounds(389, 260, 183, 36);
 		getContentPane().add(btnAddSP);
@@ -505,10 +493,10 @@ public class HoaDonManager extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				String maPhieuGG = txtMaPhieuGG.getText();
 				try {
-					PhieuGiamGia phieuGiamGia = new PhieuGiamGiaDAO().selectById(maPhieuGG);
+					PhieuGiamGia phieuGiamGia = new PhieuGiamGiaDAO().selectById_SL(maPhieuGG);
 					if (BigDecimal.valueOf(Double.valueOf(txtTongTien.getText()))
 							.compareTo(phieuGiamGia.getDieuKienGiam()) == 1) {
-						tienGiamPhieus = phieuGiamGia.getGiaGiam();
+						tienGiamPhieus = phieuGiamGia.getGiaGiam().multiply(tongTiens);
 						txtTienGiam.setText(decimalFormat(tienGiamPhieus.add(tienGiamDots)));
 						if (lblGiaVC.getText() != "---") {
 							thanhTiens = tongTiens.subtract(tienGiamDots.add(tienGiamPhieus)).add(BigDecimal.valueOf(Double.valueOf(lblGiaVC.getText())));
@@ -587,6 +575,8 @@ public class HoaDonManager extends JDialog {
 		btnXacNhan = new JButton("Xác nhận");
 		btnXacNhan.setEnabled(false);
 		btnXacNhan.addActionListener(new ActionListener() {
+			private BigDecimal tienThua;
+
 			public void actionPerformed(ActionEvent e) {
 				int index = tblHoaDon_CXN.getSelectedRow();
 				String maHD = (String) tblHoaDon_CXN.getValueAt(index, 0);
@@ -595,10 +585,64 @@ public class HoaDonManager extends JDialog {
 				if (HDCT_REPO.stream().filter(ct -> ct.getMaHD().equals(hoaDon.getMaHD())).collect(Collectors.toList())
 						.size() != 0) {
 					try {
-						BigDecimal tienNhan = BigDecimal
-								.valueOf(Double.valueOf(MsgBox.prompt(getContentPane(), "Tiền nhận :")));
-						BigDecimal tienThua = tienNhan.subtract(thanhTiens);
+						while (true) {
+							BigDecimal tienNhan = BigDecimal
+									.valueOf(Double.valueOf(MsgBox.prompt(getContentPane(), "Tiền nhận :")));
+							tienThua = tienNhan.subtract(thanhTiens);
+							if (tienThua.compareTo(BigDecimal.valueOf(Double.valueOf(0))) > 0) {
+								break;
+							}else {
+								MsgBox.alert(getContentPane(), "Tiền nhận nhỏ hơn số tiền cần thanh toán");
+							}
+						}
 						MsgBox.alert(getContentPane(), "Tiền thừa: " + decimalFormat(tienThua));
+						
+						HinhThucThanhToan hinhThucThanhToan = (HinhThucThanhToan) cboHinhThucThanhToan.getSelectedItem();
+						hoaDon.setId_HinhThucThanhToan(hinhThucThanhToan.getId());
+						HinhThucVanChuyen hinhThucVanChuyen = (HinhThucVanChuyen) cboHinhThucVanChuyen.getSelectedItem();
+						hoaDon.setId_HinhThucVanChuyen(hinhThucVanChuyen.getId());
+						
+						Integer id_PG = null;
+						
+						if (!txtMaPhieuGG.getText().trim().isEmpty()) {
+							PhieuGiamGia phieuGiamGia = new PhieuGiamGiaDAO().selectById(txtMaPhieuGG.getText());
+							if (phieuGiamGia != null) {
+								hoaDon.setId_PhieuGiamGia(phieuGiamGia.getID());
+							}else {
+								
+								hoaDon.setId_PhieuGiamGia(id_PG);
+							}
+						}else {
+							hoaDon.setId_PhieuGiamGia(id_PG);
+						}
+						
+						if (!txtDotGiamGia.getText().trim().isEmpty()) {
+							hoaDon.setDotGiamGia(txtDotGiamGia.getText());
+						}else {
+							hoaDon.setDotGiamGia(null);
+						}
+						
+						hoaDon.setNgayTao(XDate.toDate(XDate.toString(new Date(), "yyyy-MM-dd HH:mm:ss"), "yyyy-MM-dd HH:mm:ss"));
+						hoaDon.setTongTien(tongTiens);
+						hoaDon.setTienGiam(tienGiamPhieus.add(tienGiamDots));
+						hoaDon.setThanhTien(thanhTiens);
+						
+						new HoaDonDAO().insert(hoaDon);
+						
+						List<CTHoaDon> listChiTiet = HDCT_REPO.stream().filter(ct -> ct.getMaHD().equals(hoaDon.getMaHD()))
+								.collect(Collectors.toList());
+						
+						for (int i = 0; i < listChiTiet.size(); i++) {
+							listChiTiet.get(i).setId_HoaDon(new HoaDonDAO().selectById(maHD).getId());
+							listChiTiet.get(i).setId_Serial(new SerialNumberDAO().selectById(listChiTiet.get(i).getSerialNumber()).getId());
+							new CTHoaDonDAO().insert(listChiTiet.get(i));
+							new SerialNumberDAO().updateTT(listChiTiet.get(i).getSerialNumber());
+						}
+						
+						if (new HoaDonDAO().selectById(maHD).getPhieuGiamGia() != null) {
+						    new PhieuGiamGiaDAO().updateSL(new HoaDonDAO().selectById(maHD).getPhieuGiamGia());	
+						}
+						
 						hoaDon.setTrangThai("Đã thanh toán");
 						
 						Hoa_Don_Wait = HOA_DON_REPO.stream().filter(hd -> hd.getTrangThai().equals("Chờ thanh toán"))
@@ -609,10 +653,16 @@ public class HoaDonManager extends JDialog {
 						
 						loadHoaDon_Wait(Hoa_Don_Wait);
 						
+						BaoCao_LS_HoaDon baoCao_LS_HoaDon = new BaoCao_LS_HoaDon();
+						baoCao_LS_HoaDon.setHoaDon(new HoaDonDAO().selectById(maHD).getId());
+						baoCao_LS_HoaDon.setManv(Auth.user.getMaNV());
+						baoCao_LS_HoaDon.setLS("Thêm hóa đơn");
+						
+						new LS_HoaDonDao().insert(baoCao_LS_HoaDon);
+						
 						loadHoaDon_Success(Hoa_Don_Success);
 						
-						HinhThucThanhToan hinhThucThanhToan = (HinhThucThanhToan) cboHinhThucThanhToan.getSelectedItem();
-						hoaDon.setId_HinhThucThanhToan(hinhThucThanhToan.getId());
+						resetForm();
 						
 					} catch (NumberFormatException e2) {
 						MsgBox.alert(getContentPane(), "Vui lòng nhập lại tiền!");
@@ -652,7 +702,7 @@ public class HoaDonManager extends JDialog {
 				
 				DotGiamGia dotGiamGia = new DotGiamGiaDAO().selectDGG(tongTiens);
 				if (dotGiamGia != null) {
-					txtDotGiamGia.setText(dotGiamGia.getTen() + " - " + dotGiamGia.getGiaGiam());
+					txtDotGiamGia.setText(dotGiamGia.getMaDotGiam());
 					tienGiamDots = dotGiamGia.getGiaGiam();
 				}
 				
@@ -750,7 +800,7 @@ public class HoaDonManager extends JDialog {
 		return formattedNumber;
 	}
 
-	public void loadHoaDon_Wait(List<HoaDon> hd_Wait) {
+	public static void loadHoaDon_Wait(List<HoaDon> hd_Wait) {
 		DefaultTableModel model = (DefaultTableModel) tblHoaDon_CXN.getModel();
 		model.setColumnCount(0);
 		model.addColumn("Mã hóa đơn");
@@ -780,7 +830,7 @@ public class HoaDonManager extends JDialog {
 		}
 	}
 
-	public String generateAutoCode() {
+	public static String generateAutoCode() {
 		String uppercaseLetters = "HD";
 		String numbers = "0123456789";
 
@@ -841,7 +891,7 @@ public class HoaDonManager extends JDialog {
 		return codeBuilder.toString();
 	}
 
-	public void loadCTHoaDon(String maHoaDon) {
+	public static void loadCTHoaDon(String maHoaDon) {
 		List<CTHoaDon> listChiTiet = HDCT_REPO.stream().filter(ct -> ct.getMaHD().equals(maHoaDon))
 				.collect(Collectors.toList());
 
@@ -972,7 +1022,7 @@ public class HoaDonManager extends JDialog {
             Paragraph tongTien = new Paragraph();
             Text tongTienText = new Text("Tổng tiền : ").setFont(font_bold).setFontSize(16);
             tongTien.add(tongTienText);
-            Text text2 = new Text(hoaDon.getTongTien()+"").setFont(font_simple).setFontSize(13);
+            Text text2 = new Text(decimalFormat(hoaDon.getThanhTien())).setFont(font_simple).setFontSize(13);
             tongTien.add(text2);
             tongTien.setTextAlignment(TextAlignment.RIGHT);
             tongTien.setMarginRight(38F);
@@ -1013,7 +1063,7 @@ public class HoaDonManager extends JDialog {
             table_ChuKy.addCell(new Paragraph("\n").setFont(font_bold).setFontSize(16).setTextAlignment(TextAlignment.CENTER));
             
             table_ChuKy.addCell(new Paragraph(new KhachHangDAO().selectByMaKH(hoaDon.getMaKH()).getHoTen()).setFont(font_simple).setFontSize(13).setTextAlignment(TextAlignment.CENTER));
-            table_ChuKy.addCell(new Paragraph(lblMaNV.getText()).setFont(font_simple).setFontSize(13).setTextAlignment(TextAlignment.CENTER));
+            table_ChuKy.addCell(new Paragraph(new NhanVienService().selectById(hoaDon.getMaNV()).getHoTen()).setFont(font_simple).setFontSize(13).setTextAlignment(TextAlignment.CENTER));
             
             removeBorder(table_ChuKy);
             
@@ -1044,4 +1094,5 @@ public class HoaDonManager extends JDialog {
             e.printStackTrace();
         }
 	}
+    
 }

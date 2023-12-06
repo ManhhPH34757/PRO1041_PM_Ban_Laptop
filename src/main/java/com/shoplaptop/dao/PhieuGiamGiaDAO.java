@@ -12,12 +12,14 @@ public class PhieuGiamGiaDAO implements ShopLaptop365DAO<PhieuGiamGia, String> {
     Connection con = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    
-    String findByMaGG = "SELECT * FROM dbo.PhieuGiamGia WHERE MaPG = ? AND SoLuong > 0 AND Han > GETDATE() ";
+    String sql = "select * from PhieuGiamGia";
+    String selectPG = "SELECT * FROM PhieuGiamGia WHERE MaPG = ?";
+    String updateSL = "UPDATE PhieuGiamGia SET SoLuong = SoLuong - 1 WHERE MaPG = ?";
+    String selectPG_SL = "SELECT * FROM PhieuGiamGia WHERE SoLuong > 0 AND MaPG = ?";
     
     public ArrayList<PhieuGiamGia> getALLDAO(){
         ArrayList<PhieuGiamGia> dspg = new ArrayList<>();
-        String sql = "select * from PhieuGiamGia";
+
         try {
             con = new XJdbc().Connect();
             ps = con.prepareStatement(sql);
@@ -25,7 +27,6 @@ public class PhieuGiamGiaDAO implements ShopLaptop365DAO<PhieuGiamGia, String> {
             while(rs.next()){
               dspg.add(new PhieuGiamGia(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getInt(5), rs.getBigDecimal(6), rs.getBigDecimal(7)));
             }
-
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -67,6 +68,7 @@ public class PhieuGiamGiaDAO implements ShopLaptop365DAO<PhieuGiamGia, String> {
                 + "	DieuKienHoaDon = ? \n"
                 + "	where MaPG = ?";
         try {
+
         	XJdbc.update(sql, pgg.getTenPhieu(),pgg.getHan(),pgg.getSoLuong(),pgg.getGiaGiam(),pgg.getDieuKienGiam(),pgg.getMaPG());
         } catch (Exception e) {
             System.out.println(e);
@@ -126,6 +128,10 @@ public class PhieuGiamGiaDAO implements ShopLaptop365DAO<PhieuGiamGia, String> {
         return dspg;
     }
     
+    public static void main(String[] args) {
+        PhieuGiamGiaDAO pggdao = new PhieuGiamGiaDAO();
+        pggdao.getALLDAO();
+    }
 	@Override
 	public String insert(PhieuGiamGia entity) {
 		// TODO Auto-generated method stub
@@ -136,23 +142,43 @@ public class PhieuGiamGiaDAO implements ShopLaptop365DAO<PhieuGiamGia, String> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public void updateSL(String maPG) {
+		try {
+			XJdbc.update(updateSL, maPG);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	@Override
 	public String delete(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public PhieuGiamGia selectById(String id) {
-		List<PhieuGiamGia> list = this.selectBySQL(findByMaGG, id);
-		if (list.isEmpty()) {
-			return null;
+	public PhieuGiamGia selectById(String maPG) {
+		List<PhieuGiamGia> list = selectBySQL(selectPG, maPG);
+		if (list.size() != 0) {
+			return list.get(0);
 		}
-		return list.get(0);
+		return null;
+	}
+	
+	public PhieuGiamGia selectById_SL(String maPG) {
+		List<PhieuGiamGia> list = selectBySQL(selectPG_SL, maPG);
+		if (list.size() != 0) {
+			return list.get(0);
+		}
+		return null;
 	}
 	@Override
 	public List<PhieuGiamGia> selectAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public List<PhieuGiamGia> selectAlList() {
+		return selectBySQL(sql);	
+		
 	}
 	@Override
 	public List<PhieuGiamGia> selectBySQL(String sql, Object... args) {
@@ -171,4 +197,5 @@ public class PhieuGiamGiaDAO implements ShopLaptop365DAO<PhieuGiamGia, String> {
 			}
 	
 	}
+	
 }

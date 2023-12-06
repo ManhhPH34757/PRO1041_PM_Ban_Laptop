@@ -17,14 +17,19 @@ public class LS_HoaDonDao implements ShopLaptop365DAO<BaoCao_LS_HoaDon, String>{
 	PreparedStatement ps = null;
 	ResultSet rs = null;
 	
-	String SellectAll = "select LS_HoaDon.manv,maHD,Lichsulamviec from LS_HoaDon join HoaDon on LS_HoaDon.mahoadon = Hoadon.id where LS_Hoadon.manv =?";
+	String SellectAll = "select LS_HoaDon.manv,HoaDon.ID AS [ID_HoaDon],maHD,Lichsulamviec from LS_HoaDon join HoaDon on LS_HoaDon.mahoadon = Hoadon.id where LS_Hoadon.manv =?";
 	
 	String  deleteSQL = "DELETE FROM dbo.LS_HoaDon WHERE MaNV = ?";
-			
+		
+	String InsertSQL = "INSERT INTO dbo.LS_HoaDon( MaNV, MaHoaDon, LichSuLamViec)VALUES(   ?,  ?,  ?  )";
 	
 	public String insert(BaoCao_LS_HoaDon entity) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			XJdbc.update(InsertSQL, entity.getManv(),entity.getHoaDon(),entity.getLS());
+			return "Insert thành công";
+		} catch (Exception e) {
+			return "Insert không thành công";
+		}
 	}
 
 	
@@ -66,6 +71,7 @@ public class LS_HoaDonDao implements ShopLaptop365DAO<BaoCao_LS_HoaDon, String>{
 				baoCao.setManv(rs.getString("MaNV"));
 				baoCao.setMahd(rs.getString("maHD"));
 				baoCao.setLS(rs.getString("LichSuLamViec"));
+				baoCao.setHoaDon(rs.getInt("ID_HoaDon"));
 				list.add(baoCao);
 				
 			}

@@ -19,7 +19,7 @@ public class HoaDonDAO implements ShopLaptop365DAO<HoaDon, String> {
 			+ "			LEFT JOIN dbo.PhieuGiamGia ON PhieuGiamGia.ID = HoaDon.PhieuGiamGia\r\n"
 			+ "			LEFT JOIN dbo.DotGiamGia ON DotGiamGia.MaDG = dbo.HoaDon.DotGiamGia\r\n"
 			+ "			JOIN dbo.NhanVien ON NhanVien.MaNV = HoaDon.MaNV";
-	
+
 	String selectHoaDonByMaHoaDon = "SELECT HoaDon.ID, dbo.HoaDon.MaHD, HoaDon.MaKH,dbo.HinhThucVanChuyen.ID AS 'ID_HinhThucVanChuyen', dbo.HinhThucVanChuyen.HinhThuc AS 'HinhThucVanChuyen',dbo.HinhThucThanhToan.ID AS 'ID_HinhThucThanhToan',\r\n"
 			+ "	dbo.HinhThucThanhToan.HinhThuc AS 'HinhThucThanhToan',\r\n"
 			+ "	dbo.PhieuGiamGia.ID AS 'ID_PhieuGiamGia', PhieuGiamGia.MaPG, dbo.HoaDon.DotGiamGia,\r\n"
@@ -30,19 +30,57 @@ public class HoaDonDAO implements ShopLaptop365DAO<HoaDon, String> {
 			+ "			JOIN dbo.HinhThucThanhToan ON HinhThucThanhToan.ID = HoaDon.HinhThucThanhToan\r\n"
 			+ "			LEFT JOIN dbo.PhieuGiamGia ON PhieuGiamGia.ID = HoaDon.PhieuGiamGia\r\n"
 			+ "			LEFT JOIN dbo.DotGiamGia ON DotGiamGia.MaDG = dbo.HoaDon.DotGiamGia\r\n"
-			+ "			JOIN dbo.NhanVien ON NhanVien.MaNV = HoaDon.MaNV "
-			+ "WHERE dbo.HoaDon.MaHD = ?";
+			+ "			JOIN dbo.NhanVien ON NhanVien.MaNV = HoaDon.MaNV " + "WHERE dbo.HoaDon.MaHD = ?";
+
+	String insert = "INSERT INTO HoaDon(MaHD, MaKH, HinhThucVanChuyen, HinhThucThanhToan, PhieuGiamGia, DotGiamGia, MaNV, NgayTao, TongTien, TienGiam, ThanhTien) \r\n"
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+
+	String select_Han_LT = "SELECT IIF(DATEDIFF(DAY,dbo.HoaDon.NgayTao,GETDATE()) <= 15,N'Còn Hạn',N'Hết Hạn')  AS 'Hạn'\r\n"
+			+ "	FROM dbo.HoaDon JOIN dbo.CTHoaDon ON CTHoaDon.MaHD = HoaDon.ID\r\n"
+			+ "	JOIN dbo.Serial ON Serial.ID = CTHoaDon.ID_Serial\r\n"
+			+ "	JOIN dbo.BienThe ON BienThe.ID = Serial.ID_BienThe\r\n"
+			+ "	JOIN dbo.Laptop ON Laptop.ID = BienThe.ID_Laptop\r\n"
+			+ "	JOIN dbo.KhachHang ON KhachHang.MaKH = HoaDon.MaKH\r\n"
+			+ "	WHERE SerialNumber = ? AND SoDienThoai = ?;";
 	
+	String selectMaKH = "SELECT HoaDon.ID, dbo.HoaDon.MaHD, HoaDon.MaKH,dbo.HinhThucVanChuyen.ID AS 'ID_HinhThucVanChuyen', dbo.HinhThucVanChuyen.HinhThuc AS 'HinhThucVanChuyen',dbo.HinhThucThanhToan.ID AS 'ID_HinhThucThanhToan',\r\n"
+			+ "	dbo.HinhThucThanhToan.HinhThuc AS 'HinhThucThanhToan',\r\n"
+			+ "	dbo.PhieuGiamGia.ID AS 'ID_PhieuGiamGia', PhieuGiamGia.MaPG, dbo.HoaDon.DotGiamGia,\r\n"
+			+ "	HoaDon.MaNV,\r\n"
+			+ "	dbo.HoaDon.NgayTao, dbo.HoaDon.TongTien, dbo.HoaDon.TienGiam, dbo.HoaDon.ThanhTien\r\n"
+			+ "FROM dbo.HoaDon JOIN  dbo.KhachHang ON KhachHang.MaKH = HoaDon.MaKH\r\n"
+			+ "			JOIN dbo.HinhThucVanChuyen ON HinhThucVanChuyen.ID = HoaDon.HinhThucVanChuyen\r\n"
+			+ "			JOIN dbo.HinhThucThanhToan ON HinhThucThanhToan.ID = HoaDon.HinhThucThanhToan\r\n"
+			+ "			LEFT JOIN dbo.PhieuGiamGia ON PhieuGiamGia.ID = HoaDon.PhieuGiamGia\r\n"
+			+ "			LEFT JOIN dbo.DotGiamGia ON DotGiamGia.MaDG = dbo.HoaDon.DotGiamGia\r\n"
+			+ "			JOIN dbo.NhanVien ON NhanVien.MaNV = HoaDon.MaNV "
+			+ "WHERE dbo.HoaDon.MaKH = ?";
+
+	private String han;
+
 	@Override
 	public String insert(HoaDon entity) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			XJdbc.update(insert, entity.getMaHD(), entity.getMaKH(), entity.getId_HinhThucVanChuyen(),
+					entity.getId_HinhThucThanhToan(), entity.getId_PhieuGiamGia(), entity.getDotGiamGia(),
+					entity.getMaNV(), entity.getNgayTao(), entity.getTongTien(), entity.getTienGiam(),
+					entity.getThanhTien());
+			return "";
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public String update(HoaDon entity) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public List<HoaDon> selectByMaKH(String maKH) {
+
+		return this.selectBySQL(selectMaKH, maKH);
+
 	}
 
 	@Override
@@ -60,9 +98,21 @@ public class HoaDonDAO implements ShopLaptop365DAO<HoaDon, String> {
 		return list.get(0);
 	}
 
+	public String Han(String serial, String sdt) {
+		try {
+			ResultSet rs = XJdbc.query(select_Han_LT, serial, sdt);
+			while (rs.next()) {
+				han = rs.getString("Hạn");
+			}
+			return han;
+		} catch (Exception e) {
+			throw new RuntimeException();
+		}
+	}
+
 	@Override
 	public List<HoaDon> selectAll() {
-		
+
 		return this.selectBySQL(SelectAll_SQL);
 	}
 
@@ -96,6 +146,5 @@ public class HoaDonDAO implements ShopLaptop365DAO<HoaDon, String> {
 			throw new RuntimeException(e);
 		}
 	}
-	
 
 }

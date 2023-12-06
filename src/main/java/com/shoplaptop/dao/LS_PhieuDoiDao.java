@@ -17,14 +17,21 @@ public class LS_PhieuDoiDao implements ShopLaptop365DAO<BaoCao_LS_PhieuDoi, Stri
 	PreparedStatement ps = null;
 	ResultSet rs = null;
 	
-	String SellectALl = "SELECT LS_phieudoi.manv,maphieudoi,lichsulamviec FROM dbo.LS_PhieuDoi join PhieuDoi on phieudoi.id=LS_phieudoi.Phieudoi  where LS_Phieudoi.manv = ?";
+	String SellectALl = "SELECT LS_phieudoi.manv,PhieuDoi.ID AS [ID_PhieuDoi], maphieudoi,lichsulamviec FROM dbo.LS_PhieuDoi join PhieuDoi on phieudoi.id=LS_phieudoi.Phieudoi  where LS_Phieudoi.manv = ?";
 	
 	String deletesql = "DELETE FROM dbo.LS_PhieuDoi WHERE MaNV = ?";
 	
+	String InsertSQl = "INSERT INTO dbo.LS_PhieuDoi( MaNV,PhieuDoi,LichSuLamViec)VALUES(  ?,  ?,   ?)";
+	
 	
 	public String insert(BaoCao_LS_PhieuDoi entity) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			XJdbc.update(InsertSQl, entity.getManv(),entity.getPhieuDoi(),entity.getLS());
+			return "Insert thành công";
+		} catch (Exception e) {
+			return "Insert thất bại";
+			// TODO: handle exception
+		}
 	}
 
 	
@@ -66,6 +73,7 @@ public class LS_PhieuDoiDao implements ShopLaptop365DAO<BaoCao_LS_PhieuDoi, Stri
 				baoCao.setManv(rs.getString("MaNV"));
 				baoCao.setMaphieudoi(rs.getString("maphieudoi"));;
 				baoCao.setLS(rs.getString("LichSuLamViec"));
+				baoCao.setPhieuDoi(rs.getInt("ID_PhieuDoi"));
 				list.add(baoCao);
 				
 			}
